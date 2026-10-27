@@ -27,7 +27,9 @@ export default function App() {
           <Route path="/" element={<Welcome />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/product/:id" element={<ProductPage />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login defaultMode="login" />} />
+          <Route path="/signup" element={<Login defaultMode="register" />} />
+          <Route path="/register" element={<Navigate to="/signup" replace />} />
           <Route path="/cart" element={<Protected><CartPage /></Protected>} />
           <Route path="/orders" element={<Protected><Orders /></Protected>} />
           <Route path="/admin" element={<Protected admin><Admin /></Protected>} />
