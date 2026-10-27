@@ -68,51 +68,49 @@ export default function Assistant() {
           <button className="link" onClick={() => setOpen(false)}>Close</button>
         </header>
 
-        {!user ? (
-          <div className="drawer-empty"><p><Link to="/login" onClick={() => setOpen(false)}>Sign in</Link> to ask questions.</p></div>
-        ) : (
-          <>
-            <div className="thread">
-              {msgs.length === 0 && (
-                <div className="drawer-empty">
-                  <p>Describe what you need, a budget, or ask about shipping and returns.</p>
-                  {SUGGESTIONS.map((s) => <button key={s} className="chip" onClick={() => ask(s)}>{s}</button>)}
-                </div>
-              )}
-              {msgs.map((m, i) => (
-                <div key={i} className={`msg ${m.role}`}>
-                  {m.role === 'user' ? <p>{m.content}</p> : (
-                    <>
-                      {m.sources?.length > 0 && (
-                        <ul className="sources" aria-label="Products used to answer">
-                          {m.sources.map((s) => (
-                            <li key={s.id}>
-                              <span><b>{s.name}</b><small>{inr(s.price)} · {Math.round(s.similarity * 100)}% match</small></span>
-                              <button className="btn tiny" disabled={s.stock === 0} onClick={() => add(s)}>Add</button>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                      {m.content ? <ReactMarkdown>{m.content}</ReactMarkdown> : !m.error && <p className="muted">Searching the catalogue…</p>}
-                      {m.error && <p className="error">{m.error}</p>}
-                      {m.meta && (
-                        <p className="meta">
-                          {m.meta.filters?.maxPrice ? ` · price filter ≤ ${inr(m.meta.filters.maxPrice)}` : ''}
-
-                        </p>
-                      )}
-                    </>
-                  )}
-                </div>
-              ))}
-              <div ref={endRef} />
+        <div className="thread">
+          {!user && (
+            <div style={{ padding: '0.5rem 0.75rem', margin: '0.5rem 0', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', fontSize: '0.85rem' }}>
+              💡 <Link to="/login" onClick={() => setOpen(false)}>Sign in</Link> to save your cart and view order history.
             </div>
-            <form className="composer" onSubmit={(e) => { e.preventDefault(); ask(input); }}>
-              <input value={input} onChange={(e) => setInput(e.target.value)} maxLength={500} placeholder="What are you looking for?" aria-label="Your question" />
-              <button className="btn" disabled={busy || input.trim().length < 2}>Ask</button>
-            </form>
-          </>
-        )}
+          )}
+          {msgs.length === 0 && (
+            <div className="drawer-empty">
+              <p>Describe what you need, a budget, or ask about shipping and returns.</p>
+              {SUGGESTIONS.map((s) => <button key={s} className="chip" onClick={() => ask(s)}>{s}</button>)}
+            </div>
+          )}
+          {msgs.map((m, i) => (
+            <div key={i} className={`msg ${m.role}`}>
+              {m.role === 'user' ? <p>{m.content}</p> : (
+                <>
+                  {m.sources?.length > 0 && (
+                    <ul className="sources" aria-label="Products used to answer">
+                      {m.sources.map((s) => (
+                        <li key={s.id}>
+                          <span><b>{s.name}</b><small>{inr(s.price)} · {Math.round(s.similarity * 100)}% match</small></span>
+                          <button className="btn tiny" disabled={s.stock === 0} onClick={() => add(s)}>Add</button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {m.content ? <ReactMarkdown>{m.content}</ReactMarkdown> : !m.error && <p className="muted">Searching the catalogue…</p>}
+                  {m.error && <p className="error">{m.error}</p>}
+                  {m.meta && (
+                    <p className="meta">
+                      {m.meta.filters?.maxPrice ? ` · price filter ≤ ${inr(m.meta.filters.maxPrice)}` : ''}
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
+          ))}
+          <div ref={endRef} />
+        </div>
+        <form className="composer" onSubmit={(e) => { e.preventDefault(); ask(input); }}>
+          <input value={input} onChange={(e) => setInput(e.target.value)} maxLength={500} placeholder="What are you looking for?" aria-label="Your question" />
+          <button className="btn" disabled={busy || input.trim().length < 2}>Ask</button>
+        </form>
       </aside>
     </>
   );

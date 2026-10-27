@@ -9,8 +9,22 @@ import { streamAnswer } from '../services/llm.js';
 import { SYSTEM_PROMPT, NO_MATCH, buildMessages, demoAnswer, retrieve } from '../services/rag.js';
 import { normalizeHistory, normalizeQuestion, sha } from '../lib/text.js';
 
+import jwt from 'jsonwebtoken';
+import { COOKIE } from '../middleware/auth.js';
+
 const router = Router();
-router.use(requireAuth);
+// Parse user if signed in, but allow guest shoppers to ask questions
+router.use((req, res, next) => {
+  const token = req.cookies?.[COOKIE];
+  if (token) {
+    try {
+      const payload = jwt.verify(token, config.jwtSecret);
+      req.userId = payload.id;
+      req.role = payload.role;
+    } catch {}
+  }
+  next();
+});
 
 const chatSchema = z.object({
   question: z.string().trim().min(2).max(500),
