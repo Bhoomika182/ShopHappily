@@ -1,0 +1,65 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  # Redis Stack = Redis + RediSearch (vector index). Used as cache, cart store,
+  # rate limiter AND vector database for RAG.
+  redis:
+    image: redis/redis-stack-server:latest
+    restart: unless-stopped
+    environment:
+      REDIS_ARGS: "--appendonly yes"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  server:
+    build: ./server
+    restart: unless-stopped
+    environment:
+      PORT: 5000
+      MONGO_URI: mongodb://mongo:27017/shopmind
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:?Copy .env.example to .env and set JWT_SECRET}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-5-5}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@shophappily.dev}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin@12345}
+      CHAT_RATE_LIMIT_PER_MIN: ${CHAT_RATE_LIMIT_PER_MIN:-10}
+      PRODUCT_CACHE_TTL_SECONDS: ${PRODUCT_CACHE_TTL_SECONDS:-120}
+      ANSWER_CACHE_TTL_SECONDS: ${ANSWER_CACHE_TTL_SECONDS:-3600}
+      MIN_SIMILARITY: ${MIN_SIMILARITY:-0.2}
+      SEED_ON_START: "true"
+      MODEL_CACHE_DIR: /app/.cache
+    volumes:
+      - model_cache:/app/.cache   # embedding model is downloaded once (~25 MB)
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  client:
+    build: ./client
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
+
+volumes:
+  mongo_data:
+  redis_data:
+  model_cache:
