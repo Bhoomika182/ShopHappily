@@ -10,7 +10,7 @@ export default function Orders() {
   useEffect(() => {
     api('/orders')
       .then((data) => {
-        setOrders(data);
+        setOrders(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(() => {

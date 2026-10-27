@@ -17,8 +17,8 @@ export default function Admin() {
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
   const load = () => {
-    api('/products?limit=100').then((d) => setItems(d.items || [])).catch(() => {});
-    api('/products/categories').then((cats) => setCategories(cats || [])).catch(() => {});
+    api('/products?limit=100').then((d) => setItems(Array.isArray(d?.items) ? d.items : [])).catch(() => {});
+    api('/products/categories').then((cats) => setCategories(Array.isArray(cats) ? cats : [])).catch(() => {});
   };
   useEffect(() => { load(); }, []);
 
@@ -109,9 +109,11 @@ export default function Admin() {
     return matchSearch && matchCat;
   });
 
-  const totalStock = items.reduce((acc, p) => acc + (p.stock || 0), 0);
+  const safeItems = Array.isArray(items) ? items : [];
+  const safeCats = Array.isArray(categories) ? categories : [];
+  const totalStock = safeItems.reduce((acc, p) => acc + (p.stock || 0), 0);
   const dynamicCategories = Array.from(
-    new Set([...categories, ...items.map((p) => p.category).filter(Boolean)])
+    new Set([...safeCats, ...safeItems.map((p) => p.category).filter(Boolean)])
   ).sort();
   const activeCategories = dynamicCategories.length;
 

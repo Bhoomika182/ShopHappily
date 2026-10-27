@@ -23,7 +23,11 @@ export default function Shop() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const q = useDebounced(search.trim(), 300);
 
-  useEffect(() => { api('/products/categories').then(setCategories).catch(() => { }); }, []);
+  useEffect(() => {
+    api('/products/categories')
+      .then((cats) => Array.isArray(cats) && setCategories(cats))
+      .catch(() => {});
+  }, []);
   useEffect(() => { setPage(1); }, [q, category, sort, mode]);
 
   useEffect(() => {
@@ -40,7 +44,15 @@ export default function Shop() {
       params.set('page', page);
     }
     api(`/products${smart ? '/semantic' : ''}?${params}`)
-      .then((d) => alive && setData({ items: d.items, total: d.total ?? d.items.length, pages: d.pages ?? 1, cache: d._cache }))
+      .then((d) =>
+        alive &&
+        setData({
+          items: Array.isArray(d?.items) ? d.items : [],
+          total: d?.total ?? (Array.isArray(d?.items) ? d.items.length : 0),
+          pages: d?.pages ?? 1,
+          cache: d?._cache,
+        })
+      )
       .catch((e) => alive && setError(e.message))
       .finally(() => alive && setLoading(false));
     return () => { alive = false; };
@@ -69,33 +81,33 @@ export default function Shop() {
 
       <div className="chips">
         <button className={`chip ${category === '' ? 'on' : ''}`} onClick={() => setCategory('')}>All</button>
-        {categories.map((c) => (
+        {(Array.isArray(categories) ? categories : []).map((c) => (
           <button key={c} className={`chip ${category === c ? 'on' : ''}`} onClick={() => setCategory(c)}>
-            {ICONS[c] || '🏷️'} {c[0].toUpperCase() + c.slice(1)}
+            {ICONS[c] || '🏷️'} {c ? c[0].toUpperCase() + c.slice(1) : ''}
           </button>
         ))}
         {data.cache && <span className="cache-note" title="Served via Redis cache-aside">Catalogue cache: {data.cache}</span>}
       </div>
 
       {error && <p className="error">{error}</p>}
-      {!loading && !error && data.items.length === 0 && (
+      {!loading && !error && (!data?.items || data.items.length === 0) && (
         <div className="empty">
           <p style={{ fontSize: '2.5rem', margin: '0 0 0.5rem' }}>
-            {categories.length === 0 && !search && !category ? '📦' : '🔍'}
+            {(!categories || categories.length === 0) && !search && !category ? '📦' : '🔍'}
           </p>
           <h3 style={{ margin: '0 0 0.5rem' }}>
-            {categories.length === 0 && !search && !category
+            {(!categories || categories.length === 0) && !search && !category
               ? 'Store catalogue is empty'
               : 'No products found'}
           </h3>
           <p className="muted" style={{ margin: '0 0 1.25rem', maxWidth: '440px', lineHeight: 1.5 }}>
-            {categories.length === 0 && !search && !category
+            {(!categories || categories.length === 0) && !search && !category
               ? 'No products have been added yet. Add your inventory in the Admin dashboard to get started.'
               : mode === 'keyword'
                 ? 'Try switching to Smart Search, which understands natural descriptions.'
                 : 'Try searching with different descriptive words.'}
           </p>
-          {categories.length === 0 && !search && !category ? (
+          {(!categories || categories.length === 0) && !search && !category ? (
             <Link to="/admin" className="btn small">Open Admin Dashboard</Link>
           ) : mode === 'keyword' ? (
             <button className="btn small" onClick={() => setMode('smart')}>Switch to Smart Search</button>
@@ -105,7 +117,7 @@ export default function Shop() {
         </div>
       )}
       <div className={`grid ${loading ? 'dim' : ''}`}>
-        {data.items.map((p) => <ProductCard key={p._id} product={p} onSelect={setSelectedProduct} />)}
+        {(Array.isArray(data?.items) ? data.items : []).map((p) => <ProductCard key={p._id} product={p} onSelect={setSelectedProduct} />)}
       </div>
 
       {selectedProduct && (

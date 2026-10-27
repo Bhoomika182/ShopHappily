@@ -14,7 +14,12 @@ export function CartProvider({ children }) {
 
   const refresh = useCallback(async () => {
     if (!user) return setCart(EMPTY);
-    try { setCart(await api('/cart')); } catch { setCart(EMPTY); }
+    try {
+      const data = await api('/cart');
+      setCart(data && Array.isArray(data.items) ? data : EMPTY);
+    } catch {
+      setCart(EMPTY);
+    }
   }, [user]);
 
   useEffect(() => { refresh(); }, [refresh]);

@@ -14,6 +14,15 @@ export async function api(path, { method = 'GET', body, headers = {} } = {}) {
     body: body ? JSON.stringify(body) : undefined,
     credentials: 'include',
   });
+  const contentType = res.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    throw new ApiError(
+      res.ok
+        ? 'Backend API not reachable. Non-JSON response received. Make sure backend is running and VITE_API_URL is configured.'
+        : `Request failed with status ${res.status}.`,
+      res.status
+    );
+  }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new ApiError(data.error || 'Request failed.', res.status);
   const cache = res.headers.get('X-Cache');
