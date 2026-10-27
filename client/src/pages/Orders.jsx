@@ -39,7 +39,7 @@ export default function Orders() {
           <p className="empty-orders-desc">
             You haven't placed any orders with us yet. Discover our latest arrivals and designer items in our shop!
           </p>
-          <Link to="/" className="btn primary-btn-glow">
+          <Link to="/shop" className="btn primary-btn-glow">
             Start Shopping
           </Link>
         </div>

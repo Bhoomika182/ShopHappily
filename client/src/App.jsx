@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Header from './components/Header.jsx';
 import Assistant from './components/Assistant.jsx';
+import Welcome from './pages/Welcome.jsx';
 import Shop from './pages/Shop.jsx';
 import CartPage from './pages/Cart.jsx';
 import Orders from './pages/Orders.jsx';
@@ -23,7 +24,8 @@ export default function App() {
       <Header />
       <main className="page">
         <Routes>
-          <Route path="/" element={<Shop />} />
+          <Route path="/" element={<Welcome />} />
+          <Route path="/shop" element={<Shop />} />
           <Route path="/product/:id" element={<ProductPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/cart" element={<Protected><CartPage /></Protected>} />

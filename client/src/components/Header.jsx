@@ -10,7 +10,8 @@ export default function Header() {
       <div className="top-inner">
         <Link to="/" className="brand">ShopHappily</Link>
         <nav>
-          <NavLink to="/" end>Shop</NavLink>
+          <NavLink to="/" end>Home</NavLink>
+          <NavLink to="/shop">Shop</NavLink>
           {user && <NavLink to="/orders">Orders</NavLink>}
           {user?.role === 'admin' && <NavLink to="/admin">Admin</NavLink>}
         </nav>

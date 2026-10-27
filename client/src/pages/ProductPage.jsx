@@ -51,7 +51,7 @@ export default function ProductPage() {
           <p style={{ fontSize: '2.5rem', margin: '0 0 0.5rem' }}>🔍</p>
           <h3>Product Not Found</h3>
           <p className="muted">{error || 'This product does not exist or has been removed.'}</p>
-          <Link to="/" className="btn small" style={{ marginTop: '1rem' }}>← Back to Shop</Link>
+          <Link to="/shop" className="btn small" style={{ marginTop: '1rem' }}>← Back to Shop</Link>
         </div>
       </div>
     );
@@ -76,7 +76,7 @@ export default function ProductPage() {
   return (
     <div className="product-page-container">
       <div className="product-page-nav">
-        <Link to="/" className="back-link">← Back to catalogue</Link>
+        <Link to="/shop" className="back-link">← Back to catalogue</Link>
         <span className="crumb-sep">/</span>
         <span className="crumb-current">{product.name}</span>
       </div>

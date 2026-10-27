@@ -37,7 +37,7 @@ export default function CartPage() {
           <p className="empty-cart-desc">
             Looks like you haven't added anything to your cart yet. Explore our curated catalogue and find something you love!
           </p>
-          <Link to="/" className="btn primary-btn-glow">
+          <Link to="/shop" className="btn primary-btn-glow">
             Explore Catalogue
           </Link>
         </div>
