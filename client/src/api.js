@@ -7,11 +7,23 @@ export class ApiError extends Error {
 
 const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || '';
 
+export function getStoredToken() {
+  try { return localStorage.getItem('sm_token') || ''; } catch { return ''; }
+}
+export function setStoredToken(token) {
+  try {
+    if (token) localStorage.setItem('sm_token', token);
+    else localStorage.removeItem('sm_token');
+  } catch {}
+}
+
 export async function api(path, { method = 'GET', body, headers = {} } = {}) {
+  const token = getStoredToken();
   const res = await fetch(`${API_BASE}/api${path}`, {
     method,
     headers: {
       ...(body ? { 'Content-Type': 'application/json' } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       'Bypass-Tunnel-Reminder': 'true',
       ...headers,
     },
@@ -37,10 +49,12 @@ export async function api(path, { method = 'GET', body, headers = {} } = {}) {
 // POST + read the response as a stream of Server-Sent Events.
 // (EventSource only supports GET, so we parse the SSE frames ourselves.)
 export async function streamChat(body, handlers, signal) {
+  const token = getStoredToken();
   const res = await fetch(`${API_BASE}/api/ai/chat`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       'Bypass-Tunnel-Reminder': 'true',
     },
     body: JSON.stringify(body),

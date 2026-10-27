@@ -10,13 +10,13 @@ export const signToken = (user) =>
 // Default is 'lax' (same-origin / reverse proxy). Use 'none' + secure for cross-site if needed.
 export const cookieOptions = {
   httpOnly: true,
-  sameSite: process.env.COOKIE_SAME_SITE || 'lax',
-  secure: config.secureCookies,
+  sameSite: process.env.COOKIE_SAME_SITE || 'none',
+  secure: true,
   maxAge: 7 * 24 * 3600 * 1000,
 };
 
 export function requireAuth(req, res, next) {
-  const token = req.cookies?.[COOKIE];
+  const token = req.cookies?.[COOKIE] || req.headers.authorization?.replace(/^Bearer\s+/i, '');
   if (!token) return res.status(401).json({ error: 'Sign in to continue.' });
   try {
     const payload = jwt.verify(token, config.jwtSecret);

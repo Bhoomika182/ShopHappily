@@ -23,7 +23,8 @@ router.post('/register', authLimit, async (req, res) => {
   if (await User.exists({ email: email.toLowerCase() }))
     return res.status(409).json({ error: 'That email already has an account. Sign in instead.' });
   const user = await User.create({ name, email, password: await bcrypt.hash(password, 10), role });
-  res.cookie(COOKIE, signToken(user), cookieOptions).status(201).json({ user: publicUser(user) });
+  const token = signToken(user);
+  res.cookie(COOKIE, token, cookieOptions).status(201).json({ user: publicUser(user), token });
 });
 
 router.post('/login', authLimit, async (req, res) => {
@@ -31,7 +32,8 @@ router.post('/login', authLimit, async (req, res) => {
   const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
   if (!user || !(await bcrypt.compare(password, user.password)))
     return res.status(401).json({ error: 'Email or password is incorrect.' });
-  res.cookie(COOKIE, signToken(user), cookieOptions).json({ user: publicUser(user) });
+  const token = signToken(user);
+  res.cookie(COOKIE, token, cookieOptions).json({ user: publicUser(user), token });
 });
 
 router.post('/logout', (req, res) => {
