@@ -137,14 +137,12 @@ button, input, select, textarea {
 .top {
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 100;
   width: 100%;
   padding: 0.75rem 1.5rem;
-  background: rgba(11, 17, 32, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--line);
-  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4);
+  background: #080c14;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6);
   box-sizing: border-box;
 }
 
@@ -2970,9 +2968,9 @@ textarea {
    ========================================================================== */
 
 .welcome-container {
-  max-width: 1180px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 3.5rem 1.5rem 5rem;
+  padding: 1.5rem 1rem 4rem;
 }
 
 .welcome-hero {
@@ -2987,7 +2985,7 @@ textarea {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.45rem 1.15rem;
+  padding: 0.42rem 1.1rem;
   border-radius: var(--radius-full);
   background: rgba(37, 99, 235, 0.12);
   border: 1px solid rgba(59, 130, 246, 0.28);
@@ -2995,7 +2993,7 @@ textarea {
   font-size: 0.88rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.25rem;
   box-shadow: 0 0 20px rgba(37, 99, 235, 0.15);
   animation: fadeInDown 0.6s ease-out;
 }
@@ -3006,12 +3004,12 @@ textarea {
 
 .welcome-title {
   font-family: var(--font-display);
-  font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
   font-weight: 800;
-  line-height: 1.12;
+  line-height: 1.15;
   letter-spacing: -0.03em;
   color: #ffffff;
-  margin: 0 0 1.25rem;
+  margin: 0 0 1rem;
   max-width: 860px;
 }
 
@@ -3024,11 +3022,11 @@ textarea {
 
 .welcome-subtitle {
   font-family: var(--font-body);
-  font-size: clamp(1.05rem, 2vw, 1.28rem);
-  line-height: 1.6;
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+  line-height: 1.55;
   color: var(--muted);
   max-width: 680px;
-  margin: 0 0 2.5rem;
+  margin: 0 0 2rem;
 }
 
 .welcome-actions {
@@ -3037,7 +3035,7 @@ textarea {
   justify-content: center;
   gap: 1.15rem;
   flex-wrap: wrap;
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
 }
 
 .welcome-btn-primary {
