@@ -1,6 +1,23 @@
 import { useState, useEffect } from 'react';
 import { Navigate, useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/Auth.jsx';
+import {
+  Lock,
+  UserPlus,
+  LogIn,
+  Sparkles,
+  User,
+  Mail,
+  Eye,
+  EyeOff,
+  ShoppingBag,
+  ShieldCheck,
+  Shield,
+  Zap,
+  ArrowRight,
+  AlertCircle,
+  CheckCircle2,
+} from 'lucide-react';
 
 export default function Login({ defaultMode }) {
   const { user, login, register } = useAuth();
@@ -56,7 +73,7 @@ export default function Login({ defaultMode }) {
   return (
     <div className="auth-wrapper">
       <div className="auth-card">
-        {/* Top Gradient Glow Accent */}
+        {/* Top Accent Gradient Line */}
         <div className="auth-card-top-accent" />
 
         {/* Tab Switcher for Sign In / Sign Up */}
@@ -71,7 +88,8 @@ export default function Login({ defaultMode }) {
               setError('');
             }}
           >
-            <span className="auth-tab-icon">🔐</span> Sign In
+            <LogIn size={16} className="auth-tab-icon" />
+            <span>Sign In</span>
           </button>
           <button
             type="button"
@@ -83,15 +101,14 @@ export default function Login({ defaultMode }) {
               setError('');
             }}
           >
-            <span className="auth-tab-icon">✨</span> Create Account
+            <UserPlus size={16} className="auth-tab-icon" />
+            <span>Create Account</span>
           </button>
         </div>
 
         {/* Header Section */}
         <div className="auth-header">
-          <div className="auth-badge">
-            {mode === 'login' ? '👋 Welcome back' : '🚀 Quick & Easy Setup'}
-          </div>
+
           <h1 className="auth-title">
             {mode === 'login' ? (
               <>Sign in to <span className="auth-highlight">ShopHappily</span></>
@@ -102,37 +119,16 @@ export default function Login({ defaultMode }) {
           <p className="auth-subtitle">
             {mode === 'login'
               ? 'Enter your credentials to access your cart, order history, and AI shopper.'
-              : 'Join today to enjoy intelligent Redis vector search and real-time orders.'}
+              : 'Join today to experience intelligent vector search and instant checkout.'}
           </p>
         </div>
 
-        {/* Demo Quick-Fill Bar (Sign In mode) */}
-        {mode === 'login' && (
-          <div className="auth-demo-banner">
-            <span className="demo-label">Demo Quick Fill:</span>
-            <button
-              type="button"
-              className="demo-chip"
-              onClick={() => fillDemo('admin@shophappily.dev', 'Admin@12345', 'admin')}
-              title="Click to fill Demo Administrator credentials"
-            >
-              ⚡ Admin
-            </button>
-            <button
-              type="button"
-              className="demo-chip"
-              onClick={() => fillDemo('shopper@shophappily.dev', 'ShopHappily@123', 'user')}
-              title="Click to fill Demo Shopper credentials"
-            >
-              🛍️ Shopper
-            </button>
-          </div>
-        )}
+
 
         {/* Error Alert */}
         {error && (
           <div className="auth-error-alert" role="alert">
-            <span className="auth-error-icon">⚠️</span>
+            <AlertCircle size={18} className="auth-error-icon" />
             <span className="auth-error-text">{error}</span>
           </div>
         )}
@@ -147,7 +143,7 @@ export default function Login({ defaultMode }) {
                   Full Name
                 </label>
                 <div className="auth-input-wrapper">
-                  <span className="auth-input-icon">👤</span>
+                  <User size={16} className="auth-input-icon" />
                   <input
                     id="auth-name"
                     type="text"
@@ -170,7 +166,9 @@ export default function Login({ defaultMode }) {
                     className={`auth-role-card ${form.role === 'user' ? 'selected' : ''}`}
                     onClick={() => setForm((prev) => ({ ...prev, role: 'user' }))}
                   >
-                    <div className="role-icon">🛍️</div>
+                    <div className="role-icon-box">
+                      <ShoppingBag size={18} />
+                    </div>
                     <div className="role-info">
                       <span className="role-name">Customer</span>
                       <span className="role-desc">Browse, shop & AI search</span>
@@ -181,7 +179,9 @@ export default function Login({ defaultMode }) {
                     className={`auth-role-card ${form.role === 'admin' ? 'selected' : ''}`}
                     onClick={() => setForm((prev) => ({ ...prev, role: 'admin' }))}
                   >
-                    <div className="role-icon">⚡</div>
+                    <div className="role-icon-box">
+                      <ShieldCheck size={18} />
+                    </div>
                     <div className="role-info">
                       <span className="role-name">Administrator</span>
                       <span className="role-desc">Manage store & products</span>
@@ -198,7 +198,7 @@ export default function Login({ defaultMode }) {
               Email Address
             </label>
             <div className="auth-input-wrapper">
-              <span className="auth-input-icon">✉️</span>
+              <Mail size={16} className="auth-input-icon" />
               <input
                 id="auth-email"
                 type="email"
@@ -223,7 +223,7 @@ export default function Login({ defaultMode }) {
               )}
             </div>
             <div className="auth-input-wrapper">
-              <span className="auth-input-icon">🔒</span>
+              <Lock size={16} className="auth-input-icon" />
               <input
                 id="auth-password"
                 type={showPassword ? 'text' : 'password'}
@@ -242,7 +242,7 @@ export default function Login({ defaultMode }) {
                 title={showPassword ? 'Hide password' : 'Show password'}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
-                {showPassword ? '🙈' : '👁️'}
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
@@ -259,8 +259,9 @@ export default function Login({ defaultMode }) {
                 {mode === 'login' ? 'Signing in...' : 'Creating account...'}
               </span>
             ) : (
-              <span>
-                {mode === 'login' ? 'Sign In to Account →' : 'Create Free Account →'}
+              <span className="auth-btn-content">
+                <span>{mode === 'login' ? 'Sign In to Account' : 'Create Free Account'}</span>
+                <ArrowRight size={16} className="btn-arrow" />
               </span>
             )}
           </button>
@@ -284,9 +285,15 @@ export default function Login({ defaultMode }) {
           </p>
 
           <div className="auth-security-note">
-            <span>🔒 256-bit SSL Secure</span>
+            <span className="sec-item">
+              <Shield size={13} className="sec-icon" />
+              256-bit SSL Secure
+            </span>
             <span className="dot">•</span>
-            <span>⚡ Redis Fast Session</span>
+            <span className="sec-item">
+              <CheckCircle2 size={13} className="sec-icon" />
+              Redis Fast Session
+            </span>
             <span className="dot">•</span>
             <Link to="/shop" className="auth-browse-link">Browse as guest</Link>
           </div>
