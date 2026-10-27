@@ -1,2 +1,137 @@
-// Product seed data is cleared. Products are added manually via the Admin UI.
-export const PRODUCTS = [];
+export const PRODUCTS = [
+  // Existing catalogue pieces
+  {
+    name: 'Womens Bag',
+    description: 'Elegant structured leather handbag with gold-tone hardware, spacious main compartment, and detachable adjustable shoulder strap.',
+    price: 5000,
+    category: 'bags',
+    tags: ['handbag', 'leather', 'shoulder bag', 'fashion'],
+    image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=600&q=80',
+    stock: 18,
+  },
+  {
+    name: 'Womens Watch',
+    description: 'Luxury stainless steel analog wristwatch with mother-of-pearl dial, diamond indices, and scratch-resistant sapphire crystal.',
+    price: 33000,
+    category: 'watches',
+    tags: ['watch', 'analog', 'luxury', 'jewellery', 'accessories'],
+    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80',
+    stock: 12,
+  },
+
+  // Shoes
+  {
+    name: 'AirFlow Pro Road Running Shoes',
+    description: 'Ultra-breathable engineered mesh running shoes with responsive foam cushioning and high-grip rubber outsole for daily training and marathons.',
+    price: 4299,
+    category: 'shoes',
+    tags: ['running', 'sneakers', 'sports', 'footwear', 'cushioned'],
+    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80',
+    stock: 24,
+  },
+  {
+    name: 'Classic Oxford Leather Formal Shoes',
+    description: 'Handcrafted genuine full-grain leather Oxford shoes featuring Goodyear welted sole, cushioned insole, and polished cap-toe design for business and formal events.',
+    price: 5899,
+    category: 'shoes',
+    tags: ['formal', 'leather', 'oxford', 'office', 'classic'],
+    image: 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&w=600&q=80',
+    stock: 15,
+  },
+  {
+    name: 'Urban Canvas Low-Top Sneakers',
+    description: 'Everyday casual low-top canvas sneakers with vulcanized non-slip rubber soles and breathable cotton lining for all-day comfort.',
+    price: 2499,
+    category: 'shoes',
+    tags: ['sneakers', 'casual', 'canvas', 'streetwear', 'white'],
+    image: 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=600&q=80',
+    stock: 30,
+  },
+
+  // Jackets
+  {
+    name: 'StormShield All-Weather Waterproof Jacket',
+    description: 'Three-layer breathable waterproof membrane jacket with taped seams, adjustable storm hood, and zippered armpit vents for monsoon trekking and hiking.',
+    price: 4799,
+    category: 'jackets',
+    tags: ['waterproof', 'windbreaker', 'outdoor', 'trekking', 'hooded'],
+    image: 'https://images.unsplash.com/photo-1544022613-e87ca75a784a?auto=format&fit=crop&w=600&q=80',
+    stock: 18,
+  },
+  {
+    name: 'Vintage Biker Leather Jacket',
+    description: 'Authentic heavy-duty lambskin leather motorcycle jacket with asymmetrical front zipper, quilted polyester lining, and heavy antique brass hardware.',
+    price: 8999,
+    category: 'jackets',
+    tags: ['leather', 'biker', 'vintage', 'winter', 'black'],
+    image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80',
+    stock: 12,
+  },
+  {
+    name: 'Thermal Puffer Down Winter Jacket',
+    description: 'Ultra-lightweight 700-fill down insulated puffer jacket with water-resistant ripstop shell and thermal fleece chin guard for sub-zero climates.',
+    price: 6499,
+    category: 'jackets',
+    tags: ['puffer', 'winter', 'down', 'warm', 'thermal'],
+    image: 'https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=600&q=80',
+    stock: 20,
+  },
+
+  // Tables
+  {
+    name: 'Ergonomic Dual-Motor Electric Standing Desk',
+    description: 'Smart height-adjustable motorized desk with 4 programmable memory presets, anti-collision sensor, solid walnut top, and heavy-duty steel frame supports up to 120kg.',
+    price: 24999,
+    category: 'tables',
+    tags: ['desk', 'standing desk', 'ergonomic', 'office', 'motorized'],
+    image: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?auto=format&fit=crop&w=600&q=80',
+    stock: 10,
+  },
+  {
+    name: 'Nordic Minimalist Solid Oak Dining Table',
+    description: 'Scandinavian 6-seater dining table crafted from sustainably sourced solid white oak with natural matte oil finish and bevelled rounded edge corners.',
+    price: 18499,
+    category: 'tables',
+    tags: ['dining', 'oak', 'wood', 'scandinavian', 'home'],
+    image: 'https://images.unsplash.com/photo-1615066390971-03e4e1c36ddf?auto=format&fit=crop&w=600&q=80',
+    stock: 8,
+  },
+  {
+    name: 'Mid-Century Modern Round Coffee Table',
+    description: 'Round walnut veneer accent coffee table with angled solid wood tapered legs and double-tier storage shelf for living rooms and lounge spaces.',
+    price: 6999,
+    category: 'tables',
+    tags: ['coffee table', 'living room', 'walnut', 'furniture', 'round'],
+    image: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=600&q=80',
+    stock: 14,
+  },
+
+  // Laptops
+  {
+    name: 'ProBook Ultra 14 Intel Core i7 Laptop',
+    description: 'Ultra-slim aluminum unibody 14-inch laptop powered by 13th Gen Intel Core i7, 16GB LPDDR5 RAM, 1TB NVMe SSD, and 2.8K 120Hz OLED vibrant display with 14h battery life.',
+    price: 74999,
+    category: 'laptops',
+    tags: ['laptop', 'ultrabook', 'intel', 'oled', 'lightweight', 'computer'],
+    image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80',
+    stock: 16,
+  },
+  {
+    name: 'Titan Stealth RTX 4070 Gaming Laptop',
+    description: 'High-performance 16-inch gaming powerhouse with AMD Ryzen 9 7945HX, NVIDIA GeForce RTX 4070 (140W TGP), 32GB DDR5 RAM, 240Hz QHD+ screen, and vapour chamber cooling.',
+    price: 118999,
+    category: 'laptops',
+    tags: ['gaming', 'laptop', 'rtx4070', 'ryzen9', 'high performance'],
+    image: 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=600&q=80',
+    stock: 9,
+  },
+  {
+    name: 'SlimBook Air Thin & Light M-Series Laptop',
+    description: 'Featherweight 1.24kg fanless laptop with 8-core CPU, 10-core GPU, Liquid Retina display with True Tone, MagSafe fast charging, and up to 18 hours of battery.',
+    price: 89999,
+    category: 'laptops',
+    tags: ['laptop', 'thin', 'light', 'battery', 'student', 'macbook'],
+    image: 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=600&q=80',
+    stock: 22,
+  },
+];

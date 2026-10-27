@@ -10,6 +10,10 @@ import {
   Tag,
   ShoppingBag,
   Watch,
+  Footprints,
+  Shirt,
+  Layers,
+  Laptop,
 } from 'lucide-react';
 
 export default function Welcome() {
@@ -96,11 +100,27 @@ export default function Welcome() {
             <Tag size={13} className="chip-icon" />
             <span>All Products</span>
           </Link>
-          <Link to="/shop" className="welcome-chip">
-            <ShoppingBag size={13} className="chip-icon" />
-            <span>Designer Bags</span>
+          <Link to="/shop?category=shoes" className="welcome-chip">
+            <Footprints size={13} className="chip-icon" />
+            <span>Shoes</span>
           </Link>
-          <Link to="/shop" className="welcome-chip">
+          <Link to="/shop?category=jackets" className="welcome-chip">
+            <Shirt size={13} className="chip-icon" />
+            <span>Jackets</span>
+          </Link>
+          <Link to="/shop?category=tables" className="welcome-chip">
+            <Layers size={13} className="chip-icon" />
+            <span>Tables</span>
+          </Link>
+          <Link to="/shop?category=laptops" className="welcome-chip">
+            <Laptop size={13} className="chip-icon" />
+            <span>Laptops</span>
+          </Link>
+          <Link to="/shop?category=bags" className="welcome-chip">
+            <ShoppingBag size={13} className="chip-icon" />
+            <span>Bags</span>
+          </Link>
+          <Link to="/shop?category=watches" className="welcome-chip">
             <Watch size={13} className="chip-icon" />
             <span>Watches</span>
           </Link>

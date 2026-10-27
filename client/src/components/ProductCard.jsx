@@ -3,7 +3,20 @@ import { inr } from '../api.js';
 import { useAuth } from '../context/Auth.jsx';
 import { useCart } from '../context/Cart.jsx';
 
-export const ICONS = { outdoor: '⛺', electronics: '🎧', fitness: '🏃', kitchen: '🍳', office: '🪑', home: '🛋️' };
+export const ICONS = {
+  shoes: '👟',
+  jackets: '🧥',
+  tables: '🪵',
+  laptops: '💻',
+  bags: '👜',
+  watches: '⌚',
+  outdoor: '⛺',
+  electronics: '🎧',
+  fitness: '🏃',
+  kitchen: '🍳',
+  office: '🪑',
+  home: '🛋️',
+};
 
 export default function ProductCard({ product, onSelect }) {
   const { user } = useAuth();

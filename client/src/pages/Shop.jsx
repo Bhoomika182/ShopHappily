@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../api.js';
 import ProductCard, { ICONS } from '../components/ProductCard.jsx';
 import ProductModal from '../components/ProductModal.jsx';
@@ -11,12 +11,18 @@ function useDebounced(value, ms) {
 }
 
 export default function Shop() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [mode, setMode] = useState('keyword'); // keyword = Mongo text index, smart = Redis vector search
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState(searchParams.get('category') || '');
   const [sort, setSort] = useState('newest');
   const [page, setPage] = useState(1);
   const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const cat = searchParams.get('category') || '';
+    setCategory(cat);
+  }, [searchParams]);
   const [data, setData] = useState({ items: [], total: 0, pages: 1 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -80,9 +86,18 @@ export default function Shop() {
       </div>
 
       <div className="chips">
-        <button className={`chip ${category === '' ? 'on' : ''}`} onClick={() => setCategory('')}>All</button>
+        <button
+          className={`chip ${category === '' ? 'on' : ''}`}
+          onClick={() => { setCategory(''); setSearchParams({}); }}
+        >
+          All
+        </button>
         {(Array.isArray(categories) ? categories : []).map((c) => (
-          <button key={c} className={`chip ${category === c ? 'on' : ''}`} onClick={() => setCategory(c)}>
+          <button
+            key={c}
+            className={`chip ${category === c ? 'on' : ''}`}
+            onClick={() => { setCategory(c); setSearchParams({ category: c }); }}
+          >
             {ICONS[c] || '🏷️'} {c ? c[0].toUpperCase() + c.slice(1) : ''}
           </button>
         ))}
