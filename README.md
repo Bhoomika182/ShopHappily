@@ -1,5 +1,7 @@
 # ShopHappily: AI-powered e-commerce (MERN + Redis + RAG + Docker)
 
+> 🌐 **Live Demo:** [https://shophappily.vercel.app/](https://shophappily.vercel.app/)
+
 An online store where shoppers can **ask for what they need in plain language** ("a waterproof jacket for
 trekking under ₹5000", "what's your return policy?") and get a streamed, grounded answer with product cards.
 
