@@ -10,7 +10,11 @@ const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || '';
 export async function api(path, { method = 'GET', body, headers = {} } = {}) {
   const res = await fetch(`${API_BASE}/api${path}`, {
     method,
-    headers: { ...(body ? { 'Content-Type': 'application/json' } : {}), ...headers },
+    headers: {
+      ...(body ? { 'Content-Type': 'application/json' } : {}),
+      'Bypass-Tunnel-Reminder': 'true',
+      ...headers,
+    },
     body: body ? JSON.stringify(body) : undefined,
     credentials: 'include',
   });
@@ -35,7 +39,10 @@ export async function api(path, { method = 'GET', body, headers = {} } = {}) {
 export async function streamChat(body, handlers, signal) {
   const res = await fetch(`${API_BASE}/api/ai/chat`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Bypass-Tunnel-Reminder': 'true',
+    },
     body: JSON.stringify(body),
     signal,
     credentials: 'include',
