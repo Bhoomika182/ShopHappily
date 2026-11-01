@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { extractMaxPrice, normalizeHistory, buildRetrievalQuery, productText } from '../src/lib/text.js';
+import { extractCategory, extractMaxPrice, normalizeHistory, buildRetrievalQuery, productText } from '../src/lib/text.js';
 import { toBuffer, cosine } from '../src/lib/vec.js';
 
 test('extractMaxPrice parses common phrasings', () => {
@@ -30,6 +30,21 @@ test('buildRetrievalQuery borrows context for short follow-ups only', () => {
   const history = [{ role: 'user', content: 'rain jacket for trekking' }, { role: 'assistant', content: '...' }];
   assert.match(buildRetrievalQuery('cheaper ones?', history), /rain jacket/);
   assert.equal(buildRetrievalQuery('what do you have for sleeping better at night', history), 'what do you have for sleeping better at night');
+  // Topic switch must never borrow context from previous category
+  const shoeHistory = [{ role: 'user', content: 'shoes' }, { role: 'assistant', content: '...' }];
+  assert.equal(buildRetrievalQuery('laptops', shoeHistory), 'laptops');
+  assert.equal(buildRetrievalQuery('show me laptops', shoeHistory), 'show me laptops');
+});
+
+test('extractCategory identifies canonical product categories', () => {
+  assert.equal(extractCategory('laptops'), 'laptops');
+  assert.equal(extractCategory('show me some laptop models'), 'laptops');
+  assert.equal(extractCategory('running shoes under 5000'), 'shoes');
+  assert.equal(extractCategory('leather jacket'), 'jackets');
+  assert.equal(extractCategory('luxury watch'), 'watches');
+  assert.equal(extractCategory('standing desk'), 'tables');
+  assert.equal(extractCategory('handbag for travel'), 'bags');
+  assert.equal(extractCategory('random unrelated question'), undefined);
 });
 
 test('productText includes name, category and tags', () => {

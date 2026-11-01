@@ -2,7 +2,7 @@ import Product from '../models/Product.js';
 import { embed } from './embeddings.js';
 import { search } from './vectorStore.js';
 import { config } from '../config.js';
-import { buildRetrievalQuery, extractMaxPrice, inr } from '../lib/text.js';
+import { buildRetrievalQuery, extractCategory, extractMaxPrice, inr } from '../lib/text.js';
 
 export const SYSTEM_PROMPT = `You are ShopHappily, a shopping assistant for an online store.
 Rules:
@@ -31,8 +31,9 @@ const BROAD_QUERY_REGEX = /(available|what.*product|what.*sell|what.*have|all pr
 export async function retrieve(question, history = [], { category } = {}) {
   const maxPrice = extractMaxPrice(question);
   const query = buildRetrievalQuery(question, history);
+  const detectedCategory = category || extractCategory(question) || extractCategory(query);
   const isBroad = BROAD_QUERY_REGEX.test(question);
-  const effectiveMinSim = isBroad ? 0.05 : config.minSimilarity;
+  const effectiveMinSim = isBroad ? 0.05 : (detectedCategory ? 0.20 : config.minSimilarity);
 
   const t0 = performance.now();
   const vector = await embed(query);
@@ -40,7 +41,7 @@ export async function retrieve(question, history = [], { category } = {}) {
 
   // Two retrievals, one per knowledge source: products (with filters) and store policies.
   const [productHits, faqHits] = await Promise.all([
-    search(vector, { k: 8, type: 'product', category, maxPrice }),
+    search(vector, { k: 8, type: 'product', category: detectedCategory, maxPrice }),
     search(vector, { k: 2, type: 'faq' }),
   ]);
   const t2 = performance.now();
@@ -48,11 +49,24 @@ export async function retrieve(question, history = [], { category } = {}) {
   // Similarity floor: if nothing is close enough we skip the LLM entirely (cheaper, and no hallucination).
   let products = await hydrate(productHits.filter((h) => h.similarity >= effectiveMinSim));
 
-  // If user asks a broad catalogue inquiry and vector hits are limited, supplement with in-stock products
-  if (isBroad && products.length < 6) {
+  // If a specific category was detected or requested, strictly enforce category isolation
+  if (detectedCategory) {
+    products = products.filter((p) => p.product.category === detectedCategory);
+  }
+
+  // If user asks for a category and vector hits are fewer than 3, supplement with in-stock products of that category
+  if (detectedCategory && products.length < 3) {
+    const existingIds = new Set(products.map((p) => String(p.product._id)));
+    const filter = { _id: { $nin: [...existingIds] }, category: detectedCategory, stock: { $gt: 0 } };
+    if (maxPrice != null) filter.price = { $lte: maxPrice };
+    const moreDocs = await Product.find(filter).limit(3 - products.length).lean();
+    for (const doc of moreDocs) {
+      products.push({ product: doc, similarity: 0.35 });
+    }
+  } else if (isBroad && products.length < 6) {
     const existingIds = new Set(products.map((p) => String(p.product._id)));
     const filter = { _id: { $nin: [...existingIds] }, stock: { $gt: 0 } };
-    if (category) filter.category = category;
+    if (detectedCategory) filter.category = detectedCategory;
     if (maxPrice != null) filter.price = { $lte: maxPrice };
     const moreDocs = await Product.find(filter).limit(6 - products.length).lean();
     for (const doc of moreDocs) {
@@ -64,7 +78,7 @@ export async function retrieve(question, history = [], { category } = {}) {
 
   return {
     products, faqs, query,
-    filters: { maxPrice, category },
+    filters: { maxPrice, category: detectedCategory },
     timings: { embedMs: Math.round(t1 - t0), searchMs: Math.round(t2 - t1) },
   };
 }
@@ -100,7 +114,12 @@ export function demoAnswer(retrieved) {
   }
   const lines = [];
   if (retrieved.products?.length) {
-    lines.push('Here are the products currently available in our store:');
+    const cat = retrieved.filters?.category;
+    if (cat) {
+      lines.push(`Here are the **${cat}** available in our store:`);
+    } else {
+      lines.push('Here are the products currently available in our store:');
+    }
     retrieved.products.slice(0, 6).forEach(({ product: p }) =>
       lines.push(`- **${p.name}** (${inr(p.price)}): ${p.description.split('. ')[0]}.`)
     );

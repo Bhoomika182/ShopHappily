@@ -35,10 +35,110 @@ export function normalizeHistory(history = []) {
   return out;
 }
 
+export const CATEGORY_MAP = {
+  // Laptops
+  laptop: 'laptops',
+  laptops: 'laptops',
+  notebook: 'laptops',
+  notebooks: 'laptops',
+  macbook: 'laptops',
+  macbooks: 'laptops',
+  computer: 'laptops',
+  computers: 'laptops',
+  pc: 'laptops',
+  ultrabook: 'laptops',
+  ultrabooks: 'laptops',
+
+  // Shoes
+  shoe: 'shoes',
+  shoes: 'shoes',
+  sneaker: 'shoes',
+  sneakers: 'shoes',
+  footwear: 'shoes',
+  boot: 'shoes',
+  boots: 'shoes',
+  oxford: 'shoes',
+  oxfords: 'shoes',
+  loafer: 'shoes',
+  loafers: 'shoes',
+  trainer: 'shoes',
+  trainers: 'shoes',
+
+  // Jackets
+  jacket: 'jackets',
+  jackets: 'jackets',
+  coat: 'jackets',
+  coats: 'jackets',
+  windbreaker: 'jackets',
+  windbreakers: 'jackets',
+  puffer: 'jackets',
+  puffers: 'jackets',
+  blazer: 'jackets',
+  blazers: 'jackets',
+  outerwear: 'jackets',
+
+  // Bags
+  bag: 'bags',
+  bags: 'bags',
+  handbag: 'bags',
+  handbags: 'bags',
+  backpack: 'bags',
+  backpacks: 'bags',
+  purse: 'bags',
+  purses: 'bags',
+  tote: 'bags',
+  totes: 'bags',
+
+  // Watches
+  watch: 'watches',
+  watches: 'watches',
+  wristwatch: 'watches',
+  wristwatches: 'watches',
+  timepiece: 'watches',
+  timepieces: 'watches',
+
+  // Tables
+  table: 'tables',
+  tables: 'tables',
+  desk: 'tables',
+  desks: 'tables',
+  furniture: 'tables',
+};
+
+export function extractCategory(q) {
+  if (!q || typeof q !== 'string') return undefined;
+  const words = q.toLowerCase().match(/\b[a-z0-9_-]+\b/g) || [];
+  for (const w of words) {
+    if (CATEGORY_MAP[w]) return CATEGORY_MAP[w];
+  }
+  return undefined;
+}
+
+const FOLLOW_UP_PATTERN = /^(and\b|or\b|also\b|how\s+about\b|what\s+about\b|any\s+(other|more|cheaper)\b|show\s+(me\s+)?(more|other)\b|cheaper\b|more\b|less\b|under\b|below\b|other\b|others\b|in\s+(black|white|blue|red|brown|leather)\b|size\b)/i;
+
+export function isFollowUp(question) {
+  return FOLLOW_UP_PATTERN.test(question.trim());
+}
+
 // Short follow-ups ("and cheaper ones?") carry no meaning alone -> borrow the previous user turn.
+// But if the question specifies a new topic or category (e.g. "laptops" after "shoes"), NEVER borrow old context.
 export function buildRetrievalQuery(question, history = []) {
   const lastUser = [...history].reverse().find((m) => m.role === 'user');
-  if (lastUser && question.trim().split(/\s+/).length < 6) return `${lastUser.content} ${question}`;
+  if (!lastUser) return question;
+
+  const currentCat = extractCategory(question);
+  const lastCat = extractCategory(lastUser.content);
+
+  // If the user specifies a category that is different from previous turn, it's a topic switch
+  if (currentCat && currentCat !== lastCat) {
+    return question;
+  }
+
+  // Only borrow context for genuine follow-ups / refinements
+  if (isFollowUp(question) || (lastCat && !currentCat && question.trim().split(/\s+/).length < 4)) {
+    return `${lastUser.content} ${question}`;
+  }
+
   return question;
 }
 
