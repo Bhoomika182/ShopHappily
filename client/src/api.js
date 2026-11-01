@@ -5,7 +5,7 @@ export class ApiError extends Error {
   }
 }
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || '';
+const API_BASE = (import.meta.env.VITE_API_URL || '').trim().replace(/\/$/, '');
 
 export function getStoredToken() {
   try { return localStorage.getItem('sm_token') || ''; } catch { return ''; }
@@ -19,17 +19,25 @@ export function setStoredToken(token) {
 
 export async function api(path, { method = 'GET', body, headers = {} } = {}) {
   const token = getStoredToken();
-  const res = await fetch(`${API_BASE}/api${path}`, {
-    method,
-    headers: {
-      ...(body ? { 'Content-Type': 'application/json' } : {}),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      'Bypass-Tunnel-Reminder': 'true',
-      ...headers,
-    },
-    body: body ? JSON.stringify(body) : undefined,
-    credentials: 'include',
-  });
+  let res;
+  try {
+    res = await fetch(`${API_BASE}/api${path}`, {
+      method,
+      headers: {
+        ...(body ? { 'Content-Type': 'application/json' } : {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        'Bypass-Tunnel-Reminder': 'true',
+        ...headers,
+      },
+      body: body ? JSON.stringify(body) : undefined,
+      credentials: 'include',
+    });
+  } catch (err) {
+    throw new ApiError(
+      `Cannot connect to backend API (${err.message}). Ensure the backend server is running and VITE_API_URL is configured.`,
+      0
+    );
+  }
   const contentType = res.headers.get('content-type') || '';
   if (!contentType.includes('application/json')) {
     throw new ApiError(
@@ -50,17 +58,25 @@ export async function api(path, { method = 'GET', body, headers = {} } = {}) {
 // (EventSource only supports GET, so we parse the SSE frames ourselves.)
 export async function streamChat(body, handlers, signal) {
   const token = getStoredToken();
-  const res = await fetch(`${API_BASE}/api/ai/chat`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      'Bypass-Tunnel-Reminder': 'true',
-    },
-    body: JSON.stringify(body),
-    signal,
-    credentials: 'include',
-  });
+  let res;
+  try {
+    res = await fetch(`${API_BASE}/api/ai/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        'Bypass-Tunnel-Reminder': 'true',
+      },
+      body: JSON.stringify(body),
+      signal,
+      credentials: 'include',
+    });
+  } catch (err) {
+    throw new ApiError(
+      `Cannot connect to backend API (${err.message}). Ensure the backend server is running and VITE_API_URL is configured.`,
+      0
+    );
+  }
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
     throw new ApiError(data.error || 'Request failed.', res.status);

@@ -19,7 +19,7 @@ import aiRoutes from './routes/ai.js';
 import adminRoutes from './routes/admin.js';
 
 const app = express();
-app.set('trust proxy', 1); // behind nginx or cloud proxy: req.ip must be the real client for rate limiting
+app.set('trust proxy', 1); // Behind reverse proxy (nginx or cloud proxy) for rate limiting
 
 // CORS & Preflight handling
 app.use((req, res, next) => {
