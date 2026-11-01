@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { ShoppingCart } from 'lucide-react';
 import { inr } from '../api.js';
 import { useAuth } from '../context/Auth.jsx';
 import { useCart } from '../context/Cart.jsx';
@@ -52,6 +53,9 @@ export default function ProductCard({ product, onSelect }) {
         ) : (
           <span>{ICONS[product.category] || '📦'}</span>
         )}
+        <span className="card-cat-badge">
+          {ICONS[product.category] || '🏷️'} {product.category ? product.category[0].toUpperCase() + product.category.slice(1) : ''}
+        </span>
         {product.similarity != null && <em className="match">{Math.round(product.similarity * 100)}% match</em>}
       </div>
       <div className="card-body">
@@ -70,6 +74,7 @@ export default function ProductCard({ product, onSelect }) {
             onClick={handleAddToCart}
             aria-label={`Add ${product.name} to cart`}
           >
+            <ShoppingCart size={15} style={{ marginRight: '4px' }} />
             Add to cart
           </button>
         </div>
