@@ -5,14 +5,18 @@ export class ApiError extends Error {
   }
 }
 
+export const DEFAULT_API = 'https://tales-price-clerk-cube.trycloudflare.com';
+
 export function getApiBase() {
   try {
     const custom = localStorage.getItem('sh_api_url');
-    if (custom) return custom.trim().replace(/\/$/, '');
+    if (custom && !custom.includes('ripe-correspondence') && !custom.includes('concerned-devel')) {
+      return custom.trim().replace(/\/$/, '');
+    }
   } catch {}
   const envUrl = (import.meta.env.VITE_API_URL || '').trim().replace(/\/$/, '');
-  if (!envUrl || envUrl.includes('ripe-correspondence-refrigerator-invest')) {
-    return 'https://tales-price-clerk-cube.trycloudflare.com';
+  if (!envUrl || envUrl.includes('ripe-correspondence') || envUrl.includes('concerned-devel')) {
+    return DEFAULT_API;
   }
   return envUrl;
 }

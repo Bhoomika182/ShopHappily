@@ -719,25 +719,6 @@ button, input, select, textarea {
   transform: scale(1.08);
 }
 
-.card-cat-badge {
-  position: absolute;
-  top: 0.75rem;
-  left: 0.75rem;
-  z-index: 2;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #e2e8f0;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.25rem 0.65rem;
-  border-radius: var(--radius-full);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
 .thumb .match {
   position: absolute;
   top: 0.75rem;

@@ -53,9 +53,6 @@ export default function ProductCard({ product, onSelect }) {
         ) : (
           <span>{ICONS[product.category] || '📦'}</span>
         )}
-        <span className="card-cat-badge">
-          {ICONS[product.category] || '🏷️'} {product.category ? product.category[0].toUpperCase() + product.category.slice(1) : ''}
-        </span>
         {product.similarity != null && <em className="match">{Math.round(product.similarity * 100)}% match</em>}
       </div>
       <div className="card-body">
