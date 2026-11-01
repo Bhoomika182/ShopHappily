@@ -5,7 +5,20 @@ export class ApiError extends Error {
   }
 }
 
-const API_BASE = (import.meta.env.VITE_API_URL || '').trim().replace(/\/$/, '');
+export function getApiBase() {
+  try {
+    const custom = localStorage.getItem('sh_api_url');
+    if (custom) return custom.trim().replace(/\/$/, '');
+  } catch {}
+  return (import.meta.env.VITE_API_URL || '').trim().replace(/\/$/, '');
+}
+
+export function setApiBase(url) {
+  try {
+    if (url) localStorage.setItem('sh_api_url', url.trim().replace(/\/$/, ''));
+    else localStorage.removeItem('sh_api_url');
+  } catch {}
+}
 
 export function getStoredToken() {
   try { return localStorage.getItem('sm_token') || ''; } catch { return ''; }
@@ -19,9 +32,10 @@ export function setStoredToken(token) {
 
 export async function api(path, { method = 'GET', body, headers = {} } = {}) {
   const token = getStoredToken();
+  const base = getApiBase();
   let res;
   try {
-    res = await fetch(`${API_BASE}/api${path}`, {
+    res = await fetch(`${base}/api${path}`, {
       method,
       headers: {
         ...(body ? { 'Content-Type': 'application/json' } : {}),
@@ -58,9 +72,10 @@ export async function api(path, { method = 'GET', body, headers = {} } = {}) {
 // (EventSource only supports GET, so we parse the SSE frames ourselves.)
 export async function streamChat(body, handlers, signal) {
   const token = getStoredToken();
+  const base = getApiBase();
   let res;
   try {
-    res = await fetch(`${API_BASE}/api/ai/chat`, {
+    res = await fetch(`${base}/api/ai/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

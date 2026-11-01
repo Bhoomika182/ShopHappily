@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { api } from '../api.js';
+import { api, getApiBase, setApiBase } from '../api.js';
 import ProductCard, { ICONS } from '../components/ProductCard.jsx';
 import ProductModal from '../components/ProductModal.jsx';
 
@@ -27,6 +27,7 @@ export default function Shop() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [customUrl, setCustomUrl] = useState('');
   const q = useDebounced(search.trim(), 300);
 
   useEffect(() => {
@@ -104,7 +105,43 @@ export default function Shop() {
         {data.cache && <span className="cache-note" title="Served via Redis cache-aside">Catalogue cache: {data.cache}</span>}
       </div>
 
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <div style={{ background: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.25)', borderRadius: '12px', padding: '1rem 1.25rem', margin: '1rem 0' }}>
+          <p className="error" style={{ margin: '0 0 0.75rem', fontWeight: 500 }}>{error}</p>
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+            <input
+              type="text"
+              placeholder="Backend URL (e.g. https://tales-price-clerk-cube.trycloudflare.com)"
+              value={customUrl}
+              onChange={(e) => setCustomUrl(e.target.value)}
+              style={{ flex: 1, minWidth: '280px', padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(0,0,0,0.4)', color: '#fff' }}
+            />
+            <button
+              className="btn small"
+              onClick={() => {
+                if (customUrl.trim()) {
+                  setApiBase(customUrl);
+                  window.location.reload();
+                }
+              }}
+            >
+              Connect API
+            </button>
+            {localStorage.getItem('sh_api_url') && (
+              <button
+                className="btn small"
+                style={{ background: 'rgba(255,255,255,0.1)' }}
+                onClick={() => {
+                  setApiBase('');
+                  window.location.reload();
+                }}
+              >
+                Reset Default
+              </button>
+            )}
+          </div>
+        </div>
+      )}
       {!loading && !error && (!data?.items || data.items.length === 0) && (
         <div className="empty">
           <p style={{ fontSize: '2.5rem', margin: '0 0 0.5rem' }}>
