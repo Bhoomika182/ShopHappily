@@ -27,7 +27,7 @@ export default function Shop() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [customUrl, setCustomUrl] = useState('');
+  const [customUrl, setCustomUrl] = useState('https://tales-price-clerk-cube.trycloudflare.com');
   const q = useDebounced(search.trim(), 300);
 
   useEffect(() => {
@@ -119,10 +119,9 @@ export default function Shop() {
             <button
               className="btn small"
               onClick={() => {
-                if (customUrl.trim()) {
-                  setApiBase(customUrl);
-                  window.location.reload();
-                }
+                const target = (customUrl || 'https://tales-price-clerk-cube.trycloudflare.com').trim();
+                setApiBase(target);
+                window.location.reload();
               }}
             >
               Connect API

@@ -10,7 +10,11 @@ export function getApiBase() {
     const custom = localStorage.getItem('sh_api_url');
     if (custom) return custom.trim().replace(/\/$/, '');
   } catch {}
-  return (import.meta.env.VITE_API_URL || '').trim().replace(/\/$/, '');
+  const envUrl = (import.meta.env.VITE_API_URL || '').trim().replace(/\/$/, '');
+  if (!envUrl || envUrl.includes('ripe-correspondence-refrigerator-invest')) {
+    return 'https://tales-price-clerk-cube.trycloudflare.com';
+  }
+  return envUrl;
 }
 
 export function setApiBase(url) {
