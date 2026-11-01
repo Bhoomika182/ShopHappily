@@ -121,12 +121,21 @@ export default function Assistant() {
                   {m.sources?.length > 0 && (
                     <ul className="sources" aria-label="Products used to answer">
                       {m.sources.map((s) => (
-                        <li key={s.id}>
-                          <span>
-                            <b>{s.name}</b>
-                            <small>{inr(s.price)} · {Math.round(s.similarity * 100)}% match</small>
-                          </span>
-                          <button className="btn tiny" disabled={s.stock === 0} onClick={() => add(s)}>
+                        <li key={s.id} className="source-item">
+                          <div className="source-info">
+                            <span className="source-name">{s.name}</span>
+                            <div className="source-meta">
+                              <span className="source-price">{inr(s.price)}</span>
+                              <span className="source-dot">·</span>
+                              <span className="source-match">{Math.round(s.similarity * 100)}% match</span>
+                            </div>
+                          </div>
+                          <button
+                            className="btn tiny source-add-btn"
+                            disabled={s.stock === 0}
+                            onClick={() => add(s)}
+                            aria-label={`Add ${s.name} to cart`}
+                          >
                             Add
                           </button>
                         </li>

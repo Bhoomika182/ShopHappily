@@ -84,10 +84,15 @@ router.post(
       }
 
       const retrieved = await retrieve(question, history, { category: body.category });
-      const sources = retrieved.products.map(({ product: p, similarity }) => ({
-        id: p._id, name: p.name, price: p.price, category: p.category, stock: p.stock,
-        similarity: Number(similarity.toFixed(2)),
-      }));
+      const isAccountQuery = /(order|what.*ordered|my order|history|tracking)/i.test(question);
+      const sources = isAccountQuery
+        ? []
+        : retrieved.products
+            .filter(({ similarity }) => similarity >= 0.15)
+            .map(({ product: p, similarity }) => ({
+              id: p._id, name: p.name, price: p.price, category: p.category, stock: p.stock,
+              similarity: Number(similarity.toFixed(2)),
+            }));
       send('sources', sources);
 
       if (!retrieved.products.length && !retrieved.faqs.length) {

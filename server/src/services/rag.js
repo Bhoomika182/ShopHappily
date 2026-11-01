@@ -93,14 +93,18 @@ export function buildMessages(question, history, retrieved) {
   ];
 }
 
-export function demoAnswer({ products, faqs }) {
+export function demoAnswer(retrieved) {
+  const q = String(retrieved.query || '').toLowerCase();
+  if (/(order|what.*ordered|my order|history|tracking)/i.test(q)) {
+    return 'To view your past orders and order status, please visit the **[Orders](/orders)** page in the navigation bar. If you are not signed in, please sign in to see your order history.';
+  }
   const lines = [];
-  if (products?.length) {
+  if (retrieved.products?.length) {
     lines.push('Here are the products currently available in our store:');
-    products.slice(0, 6).forEach(({ product: p }) =>
+    retrieved.products.slice(0, 6).forEach(({ product: p }) =>
       lines.push(`- **${p.name}** (${inr(p.price)}): ${p.description.split('. ')[0]}.`)
     );
   }
-  if (faqs?.length) lines.push('', `Relevant policy: ${faqs[0].text}`);
+  if (retrieved.faqs?.length) lines.push('', `Relevant policy: ${retrieved.faqs[0].text}`);
   return lines.join('\n');
 }
